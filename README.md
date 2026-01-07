@@ -1,57 +1,39 @@
-# Car Price Prediction using Linear Regression 🚗💰
+# Predicting Used Car Prices with Linear Regression
 
-A comprehensive analysis and predictive modeling project focused on estimating the resale value of used cars using advanced statistical methods and machine learning.
+In this project, I worked through a typical data science setup to try and predict how much a used car might sell for. The goal was to build a linear regression model that could take in a few basic details about a car—like its brand, how many miles it's driven, and its age—and give a reasonable estimate of its price.
 
-## 📌 Project Overview
+## The Data
 
-This project demonstrates a full data science workflow to predict used car prices. By analyzing a dataset of over 4,000 car entries, we developed a robust linear regression model that accounts for key features like brand, mileage, engine volume, and year of manufacture.
+I used a dataset called real_life_example.csv, which contains details for over 4,000 cars. It includes columns for Brand, Price, Body, Mileage, Engine Volume, Engine Type, Registration, Year, and Model.
 
-The project emphasizes rigorous data preprocessing, including handling missing values, identifying and removing outliers, and meeting the core assumptions of linear regression through feature engineering.
+## How I approached the project
 
-## 🛠️ Technologies & Libraries
+When I first looked at the data, it was clear that it needed quite a bit of cleaning before any modeling could happen.
 
-- **Language**: Python 3.x
-- **Data Manipulation**: `Pandas`, `NumPy`
-- **Visualization**: `Matplotlib`, `Seaborn`
-- **Machine Learning**: `Scikit-learn` (Linear Regression)
+First, I had to deal with the missing values. I found that about 170 entries were missing prices and 150 were missing engine volumes. Since these are pretty critical for a price prediction model, I decided to drop those rows entirely.
 
-## 📊 Methodology
+I also noticed that the 'Model' column had over 300 unique entries. This would have made the model way too complex once I turned them into categorical variables, so I decided to drop that column to keep things simpler and more focused on the bigger drivers of price.
 
-### 1. Data Cleaning & Preprocessing
+Another big step was handling outliers. For example, some cars had mileage or price values that were way beyond the norm. I kept only the data within the 99th percentile for these columns to prevent a few extreme cases from skewing the whole model. I also removed cars with an engine volume listed over 6.5, as those usually aren't realistic for standard passenger vehicles.
 
-- **Variable Selection**: Dropped high-cardinality features (like 'Model') to maintain model simplicity and avoid overfitting.
-- **Handling Nulls**: Identified and removed records with missing 'Price' and 'EngineV' data to ensure data quality.
-- **Outlier Treatment**: Implemented quantile-based filtering (99th percentile) for 'Price' and 'Mileage' to remove extreme values that distort statistical analysis.
-- **Filtering**: Removed unrealistic engine volumes (> 6.5L).
+## Building the Model
 
-### 2. Feature Engineering
+Linear regression works best when the data follows certain assumptions. I checked the distribution of the price and realized it wasn't linear when compared to mileage or age. To fix this, I took the natural log of the price. This smoothed things out and helped the model perform much better.
 
-- **Log Transformation**: Applied a logarithmic transformation to the target variable ('Price') to fix the non-linear relationship with features like 'Year' and 'Mileage', ensuring the model meets the assumption of homoscedasticity.
-- **Categorical Encoding**: Utilized one-hot encoding (dummy variables) for categorical features like 'Brand', 'Body', and 'Engine Type', dropping one category per feature to avoid the dummy variable trap.
+For things like brand and engine type, I created dummy variables so the computer could understand them as categories. I was careful to drop one category from each set to avoid the technical issue known as the "dummy variable trap."
 
-### 3. Model Training
+After splitting the data into training and testing sets (80/20), I scaled the features so they were all on a similar level.
 
-- **Train-Test Split**: Divided the cleaned dataset into training (80%) and testing (20%) sets.
-- **Feature Scaling**: Scaled inputs using `StandardScaler` to ensure all features contribute equally to the model coefficients.
-- **Regression Analysis**: Trained a multiple linear regression model using `sklearn.linear_model`.
+## Results
 
-## 📈 Key Findings & Performance
+After all that prep work, the model ended up with an R-squared score of around 0.77. This basically means the features I chose—like brand, age, and mileage—explains roughly 77% of why car prices vary the way they do in this dataset.
 
-- **Predictive Power**: The model achieves an **R-squared of ~0.77** on the training data, indicating that the chosen features explain a significant portion of the variance in car prices.
-- **Feature Insights**: Brand prestige and vehicle age ('Year') emerged as the strongest predictors, with mileage showing a clear inverse relationship with price.
-- **Evaluation**: Residual analysis confirmed that the errors are normally distributed and centered around zero, validating the model's appropriateness for this dataset.
+I also checked the residuals (the difference between what the model predicted and the actual price). They looked well-distributed around zero, which tells me the model's logic is pretty solid for this kind of data.
 
-## 🚀 How to Run
+## Running the code
 
-1. Ensure you have Python installed along with the required libraries:
-   ```bash
-   pip install numpy pandas matplotlib seaborn scikit-learn
-   ```
-2. Clone this repository.
-3. Open `script.ipynb` in any Jupyter environment (JupyterLab, VS Code, etc.).
-4. Ensure `real_life_example.csv` is in the same directory.
-5. Run all cells to reproduce the analysis and model results.
+If you want to run this yourself, you'll need the standard Python data stack. You can install everything with:
 
----
+pip install numpy pandas matplotlib seaborn scikit-learn
 
-_Created as part of the "Advanced Statistical Methods" practical example in Data Science._
+Just open the script.ipynb file in a Jupyter environment and make sure the CSV file is in the same folder.
